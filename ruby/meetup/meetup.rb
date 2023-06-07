@@ -1,50 +1,31 @@
 require 'date'
 
 class Meetup
+  WEEKS = %i[first second third fourth].freeze
+
   def initialize(month, year)
     @month = month
     @year = year
+
+    @days_of_month = Date.new(year, month, 1)..Date.new(year, month, -1)
   end
 
   def day(weekday, week)
-    start_date = start_date_for(weekday, week)
-    next_weekday_starting_from(start_date, weekday, week)
+    weekdays = @days_of_month.select { |day| day.wday == day_of_week(weekday) }
+
+    case week
+    when :last
+      weekdays.last
+    when :teenth
+      weekdays.find { |day| (13..19).include?(day.day) }
+    else
+      weekdays[WEEKS.index(week)]
+    end
   end
 
   private
 
-  def start_date_for(weekday, week)
-    if week == :last
-      Date.new(@year, @month, -1)
-    else
-      Date.new(@year, @month, first_day_of_week(week))
-    end
-  end
-
-  def first_day_of_week(week)
-    {
-      'first' => 1,
-      'second' => 8,
-      'third' => 15,
-      'fourth' => 22,
-      'last' => 20,
-      'teenth' => 13
-    }[week.to_s]
-  end
-
   def day_of_week(weekday)
     Date.strptime(weekday.to_s, '%A').wday
-  end
-
-  def next_weekday_starting_from(start_date, weekday, week)
-    date = start_date
-
-    if week == :last
-      date -= 1 until date.wday == day_of_week(weekday)
-    else
-      date += 1 until date.wday == day_of_week(weekday)
-    end
-
-    date
   end
 end
