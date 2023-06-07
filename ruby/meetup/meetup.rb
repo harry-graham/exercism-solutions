@@ -15,18 +15,10 @@ class Meetup
 
   def start_date_for(weekday, week)
     if week == :last
-      Date.new(start_year_for_last_week, start_month_for_last_week, 1) - 1
+      Date.new(@year, @month, -1)
     else
       Date.new(@year, @month, first_day_of_week(week))
     end
-  end
-
-  def start_year_for_last_week
-    @month == 12 ? @year + 1 : @year
-  end
-
-  def start_month_for_last_week
-    @month == 12 ? 1 : @month + 1
   end
 
   def first_day_of_week(week)
