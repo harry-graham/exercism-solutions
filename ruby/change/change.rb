@@ -7,20 +7,7 @@ class Change
   class ImpossibleCombinationError < StandardError; end
   class NegativeTargetError < StandardError; end
 
-  attr_reader :coins, :target
-
-  def initialize(coins, target)
-    @coins = coins
-    @target = target
-  end
-
-  class << self
-    def generate(coins, target)
-      new(coins, target).generate
-    end
-  end
-
-  def generate
+  def self.generate(coins, target)
     raise NegativeTargetError if target.negative?
 
     return [] if target.zero?
